@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!-- Code (markup, styles, scripts): AGPL-3.0-or-later. Data: CC BY 4.0. Text: © Toni Nestorowicz, all rights reserved. See README.md. -->
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cpath%20d='M16%203%2031%2029H1z'%20fill='%23C8322C'/%3E%3Cpath%20d='M6%2021h7l-3%208H2zM17%2023h6l-2%206h-7z'%20fill='%232F6DB5'/%3E%3C/svg%3E">
+<title>CV, Toni Nestorowicz</title>
+<meta name="description" content="CV of Toni Nestorowicz, data scientist in Leiden: computer vision in manufacturing, language models in research, and degrees from Leiden, Delft and Utrecht.">
+<style>
+/* shared with index.html: tokens, type, header, bar, footer */
+:root{
+  --bg:#F4F6F8;--ink:#152029;--muted:#5A6672;--rule:#D6DDE3;
+  --warm:#C8322C;
+  --serif:Charter,"Bitstream Charter","Sitka Text",Cambria,"Iowan Old Style",Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0F161D;--ink:#E5EAEF;--muted:#93A0AC;--rule:#25303B;
+  --warm:#FF6A5C;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.6 var(--sans);-webkit-text-size-adjust:100%}
+.wrap{max-width:68rem;margin-inline:auto;padding-inline:clamp(1.25rem,5vw,3rem)}
+a{color:inherit;text-decoration-color:var(--muted);text-decoration-thickness:1px;text-underline-offset:.2em}
+a:hover{text-decoration-color:currentColor}
+:focus-visible{outline:2px solid var(--warm);outline-offset:3px}
+h1,h2{font-family:var(--serif);font-weight:400;margin:0}
+p{margin:0}
+/* header */
+.hero{padding-block:clamp(2rem,8vh,5rem) clamp(2.25rem,6vh,3.5rem)}
+h1{font-size:clamp(2.75rem,7.5vw,5.5rem);line-height:.95;letter-spacing:-.035em}
+.lead{font:clamp(1.2rem,2.3vw,1.55rem)/1.4 var(--serif);max-width:29em;margin-top:clamp(1.25rem,3vh,1.75rem);text-wrap:pretty}
+.contact{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1.75rem;margin-top:1.5rem;color:var(--muted)}
+
+/* one line of navigation: the two figures and the CV, always at hand; its rule underlines the tabs */
+.nav{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--rule)}
+.links{display:flex;align-items:center;gap:clamp(1.25rem,3vw,2rem)}
+.links a{padding:1rem 0 .85rem;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--muted);text-decoration:none}
+.links a:hover{color:var(--ink)}
+.links a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+.sep{width:1px;height:1.1em;background:var(--rule)}
+footer{padding:2rem 0 3rem;border-top:1px solid var(--rule);font-size:.875rem;color:var(--muted)}
+
+/* this page */
+.id{display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem 2rem;width:fit-content;color:inherit;text-decoration:none}
+.photo{flex:none;width:clamp(5.5rem,11vw,8.5rem);height:auto}
+.print{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-color:var(--muted);text-decoration-thickness:1px;text-underline-offset:.2em}
+.print:hover{text-decoration-color:currentColor}
+.print[hidden]{display:none}
+section{display:grid;gap:1rem 3rem;padding:clamp(2rem,5vh,3rem) 0}
+section+section{border-top:1px solid var(--rule)}
+@media (min-width:52rem){section{grid-template-columns:12rem 1fr}}
+section h2{font-size:1.35rem;line-height:1.3}
+ol{list-style:none;margin:0;padding:0;display:grid;gap:1.75rem;max-width:40em}
+.row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 1.5rem}
+h3{font-size:1rem;font-weight:600;margin:0}
+.when{color:var(--muted);font-size:.9375rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.org{color:var(--muted)}
+li p{margin-top:.35rem}
+
+@media print{
+  @page{margin:12mm 15mm}
+  :root{--bg:#fff;--ink:#000;--muted:#444;--rule:#bbb}
+  body{font-size:9pt;line-height:1.38}
+  .nav,.print,footer{display:none}
+  .wrap{max-width:none;padding-inline:0}
+  .hero{padding-block:0 3mm}
+  h1{font-size:22pt}
+  .hero{display:grid;grid-template-columns:22mm 1fr;column-gap:6mm;align-items:center}
+  .id{display:contents}
+  .photo{width:22mm;grid-row:1 / 4}
+  .hero > *{grid-column:2}
+  .hero .photo{grid-column:1}
+  h1 br{display:none}
+  .lead{font-size:10.5pt;margin-top:2mm;max-width:none}
+  .contact{margin-top:2mm}
+  a{text-decoration:none}
+  .contact a[href*="linkedin"]::after{content:": linkedin.com/in/toni-nestorowicz"}
+  section{grid-template-columns:26mm 1fr;gap:0 7mm;padding:3mm 0}
+  section h2{font-size:12pt}
+  h3{font-size:10pt}
+  .when{font-size:9pt}
+  ol{gap:2.5mm;max-width:none}
+  li p{margin-top:.5mm}
+  li{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="wrap hero">
+  <a class="id" href="../" title="Home"><img class="photo" width="160" height="160" alt="" src="data:image/webp;base64,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"><h1>Toni Nestorowicz</h1></a>
+  <p class="lead">Data scientist, driven by curiosity and a simple belief: anything can be improved. Right now I apply it to defect detection in manufacturing, using conventional and AI-driven computer vision to reduce production stops.</p>
+  <p class="contact"><span id="mail">Email: my first name at nestorowicz.nl</span><a href="https://www.linkedin.com/in/toni-nestorowicz">LinkedIn</a><button class="print" id="print" type="button" hidden>Print or save as PDF</button></p>
+</header>
+
+<nav class="nav" aria-label="Site">
+  <div class="wrap links">
+    <a href="../#climate">Climate</a>
+    <a href="../#training">Training</a>
+    <span class="sep" aria-hidden="true"></span>
+    <a href="./" aria-current="page">CV</a>
+  </div>
+</nav>
+
+<main class="wrap">
+<section>
+  <h2>Work</h2>
+  <ol>
+    <li>
+      <div class="row"><h3>Research intern</h3><span class="when"><time datetime="2026-09">Sep 2026</time> – <time datetime="2027-01">Jan 2027</time></span></div>
+      <p class="org">Leiden Institute of Advanced Computer Science, part of my MSc Health, Ageing and Society</p>
+      <p>I am testing whether an open language model running on university hardware can reproduce a qualitative analysis of interviews with Dutch older adults about vitality, and whether it portrays them as the researcher did or reads decline where they describe adjustment.</p>
+    </li>
+    <li>
+      <div class="row"><h3>Operational Excellence Analyst</h3><span class="when"><time datetime="2025-11">Nov 2025</time> – now</span></div>
+      <p class="org">Strohm, IJmuiden</p>
+      <p>My work centres on defect detection in manufacturing: image acquisition and preprocessing, conventional computer vision algorithms, object detection with RF-DETR, and the tools that support them. The result outperforms what was used before and now runs in production. Along the way I set up much of the data acquisition and automation it depends on.</p>
+    </li>
+    <li>
+      <div class="row"><h3>People Analytics intern</h3><span class="when"><time datetime="2025-04">Apr</time> – <time datetime="2025-10">Oct 2025</time></span></div>
+      <p class="org">Strohm, IJmuiden</p>
+      <p>Alongside analysing business processes and HR data, I implemented a new HRM system.</p>
+    </li>
+    <li>
+      <div class="row"><h3>Teaching assistant</h3><span class="when"><time datetime="2022-08">Aug</time> – <time datetime="2022-11">Nov 2022</time></span></div>
+      <p class="org">Leiden University</p>
+      <p>I helped teach environmental data analysis with Python.</p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>Projects</h2>
+  <ol>
+    <li>
+      <h3><a href="https://github.com/professional-cynic/tsia">TSIA</a></h3>
+      <p class="org">Toni’s Simple Image Annotator, open source, built in my own time</p>
+      <p>TSIA is a desktop app for drawing bounding boxes on images and exporting them as COCO or YOLO datasets. It runs as a single binary with no server, and almost everything works from the keyboard.</p>
+    </li>
+    <li>
+      <h3><a href="../">nestorowicz.nl</a></h3>
+      <p class="org">Two interactive figures, open source</p>
+      <p>A century of De Bilt temperatures and eight years of my own training, each computed in the browser and reproducible from <a href="https://github.com/professional-cynic/nestorowicz.nl">open scripts</a>.</p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <ol>
+    <li>
+      <div class="row"><h3>MSc Health, Ageing and Society</h3><span class="when">2024–2027, part-time</span></div>
+      <p class="org">Leiden University Medical Center</p>
+    </li>
+    <li>
+      <div class="row"><h3>MSc Industrial Ecology</h3><span class="when">2021–2024</span></div>
+      <p class="org">TU Delft and Leiden University</p>
+      <p>Thesis: <cite>Improving Sustainability Communication with Generative AI</cite></p>
+    </li>
+    <li>
+      <div class="row"><h3>Leiden Leadership Programme</h3><span class="when">2022–2023</span></div>
+      <p class="org">Leiden University, honours programme</p>
+      <p>The project used qualitative methods to study the challenges international students face in the Netherlands.</p>
+    </li>
+    <li>
+      <div class="row"><h3>BSc Economics and Business Economics</h3><span class="when">2018–2021</span></div>
+      <p class="org">Utrecht University</p>
+      <p>Thesis: <cite>Assessing Sentiments in Social Media Regarding Sustainable Eating Patterns</cite></p>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>Languages</h2>
+  <p>Polish, native. English, C1+. Dutch, B2+.</p>
+</section>
+</main>
+
+<footer class="wrap">
+  <p>© 2026 Toni Nestorowicz. No cookies, trackers or external requests.</p>
+</footer>
+<script>
+/* email assembled here so it never appears in the HTML source */
+const mail = ['toni', 'nestorowicz.nl'].join('@'), link = document.createElement('a');
+link.href = 'mailto:' + mail; link.textContent = mail; document.getElementById('mail').replaceWith(link);
+const print = document.getElementById('print'); print.hidden = false; print.addEventListener('click', () => window.print());
+</script>
+</body>
+</html>
