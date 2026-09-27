@@ -69,18 +69,21 @@ h1{font-size:clamp(2.75rem,7.5vw,5.5rem);line-height:.95;letter-spacing:-.035em}
 .warm{color:var(--warm)}.cool{color:var(--cool)}
 .note{margin-top:.5rem;color:var(--muted);font-size:.9375rem}
 details{margin-top:2rem}
-.cols{columns:2 24rem;column-gap:3rem}
-.cols > *{break-inside:avoid}
+.cols{columns:2 24rem;column-gap:3rem;margin-top:1rem}
+.cols > *{break-inside:avoid;margin:0 0 1rem}
 summary{cursor:pointer;font-weight:600;width:fit-content}
-details p{margin-top:1rem;font-size:.9375rem}
+details p{font-size:.9375rem}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:1rem 0 0;padding:1rem;background:var(--band);font:.8125rem/1.5 ui-monospace,Menlo,Consolas,monospace}
 
 /* climate */
 #field{display:block;width:100%;margin:clamp(1.25rem,3vh,2rem) 0 1rem;touch-action:manipulation;cursor:crosshair;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #field[hidden]{display:none}
 .still{display:block;width:100%;height:auto;margin:1.5rem 0}
-.controls{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;margin-bottom:1.25rem}
-.controls .note{margin:0}
+.pair{display:grid;align-items:start;gap:1rem 3rem;margin-top:.25rem}
+.side{display:grid;align-content:start;gap:.6rem;order:-1}
+.side .note{margin:0}
+.side .note{text-wrap:balance}
+@media (min-width:66rem){.pair{grid-template-columns:minmax(0,36em) minmax(0,1fr)}.side{order:0;justify-items:end;text-align:right}}
 .fade{display:flex;align-items:center;gap:.5rem;width:fit-content;margin:0;color:var(--muted);font-size:.9375rem;cursor:pointer}
 .fade[hidden]{display:none}
 .fade input{margin:0;width:1rem;height:1rem;accent-color:var(--warm);cursor:pointer}
@@ -105,7 +108,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:1rem 0 0;padding:1rem;bac
 .chip{position:absolute;top:0;z-index:2;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:.8125rem;line-height:1;padding:.4rem .5rem;white-space:nowrap;pointer-events:none;opacity:0}
 .scrub .chip{opacity:1}
 .err{padding:2rem 0;color:var(--muted)}
-.aside{max-width:38em;margin-top:1rem}
+.aside{max-width:38em}
 .also{margin-top:clamp(2.5rem,6vh,3.5rem)}
 .also h3{font-size:1.125rem;margin:0}
 .fgrid{display:grid;gap:2rem 2.25rem;margin-top:1.25rem}
@@ -116,8 +119,8 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:1rem 0 0;padding:1rem;bac
 .fd .unit{font-size:.875rem;line-height:1.4;color:var(--muted);margin-top:.2rem}
 .fd svg{display:block;margin:.5rem 0 0;overflow:visible;font:12px var(--sans)}
 
-footer{padding:2rem 0 3rem;border-top:1px solid var(--rule);font-size:.875rem;color:var(--muted)}
-footer p+p{margin-top:.5rem}
+footer p:first-child{flex:1 1 24rem;max-width:44em}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;padding:2rem 0 3rem;border-top:1px solid var(--rule);font-size:.875rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -144,11 +147,13 @@ footer p+p{margin-top:.5rem}
   <p class="intro">Each of the 6,786 tiles is one stretch of ten years or more in the De Bilt temperature record, sitting above the years it spans: <span class="warm">warm colours</span> if it warmed, <span class="cool">blue</span> if it cooled, stronger for faster change.</p>
   <canvas id="field" hidden tabindex="0" role="img" aria-label="All 6,786 stretches of ten years or more in the De Bilt record, 1901 to 2025, as a triangle of tiles above the years they span. Along the base, ten-year stretches are a mix of warming and cooling; no stretch of 46 years or more cooled, and the most recent stretches warmed fastest. Arrow keys move between stretches."></canvas>
   <noscript><img class="still" src="climate/triangle.png" alt="Every stretch of ten years or more in the De Bilt record, 1901 to 2025, as a triangle of tiles. No stretch of 46 years or more cooled."></noscript>
-  <div class="controls">
-    <p class="note"><span class="on-mouse">Point at a tile to see its years; click to keep it, and click it again to let go.</span><span class="on-touch">Tap a tile to see its years; tap outside the triangle to let go.</span></p>
-    <label class="fade" hidden><input type="checkbox" id="fade"> Fade stretches whose trend could be zero</label>
+  <div class="pair">
+    <p class="read">Short stretches go both ways: of the 116 ten-year stretches, 72 warmed and 44 cooled, but only 4 by more than the year-to-year noise. Above the dashed line, at 46 years or more, none cooled. The warming has also sped up: the 46 years to 2025 warmed almost three times as fast as the 46 years to 1960.</p>
+    <div class="side">
+      <p class="note"><span class="on-mouse">Point at a tile to see its years; click to keep it, and click it again to let go.</span><span class="on-touch">Tap a tile, or drag across the triangle: sideways moves the stretch through time, up and down changes its length. Tap outside it to let go.</span></p>
+      <label class="fade" hidden><input type="checkbox" id="fade"> Fade trends that could be zero</label>
+    </div>
   </div>
-  <p class="read">Short stretches go both ways: of the 116 ten-year stretches, 72 warmed and 44 cooled, but only 4 by more than the year-to-year noise. Above the dashed line, at 46 years or more, none cooled. The warming has also sped up: the 46 years to 2025 warmed almost three times as fast as the 46 years to 1960.</p>
   <p id="live" class="sr" aria-live="polite"></p>
   <details>
     <summary>How this was made</summary>
@@ -177,8 +182,12 @@ cd nestorowicz.nl/climate
     <p class="legend" id="legend"><span class="sw" aria-hidden="true"></span>Winter, December to February</p>
     <div id="lanes"><noscript><p class="err">This figure is drawn by JavaScript.</p></noscript></div>
   </figure>
-  <p class="note"><span class="on-mouse">Point along the branches to read any week.</span><span class="on-touch">Drag sideways across the branches to read any week.</span></p>
-  <p class="aside"><strong>Did you notice?</strong> From December to February, <span id="indoor-share">most</span> of my cycling happens indoors. And the walking branch is thick because I love walking: it is my cross-training.</p>
+  <div class="pair">
+    <p class="aside"><strong>Did you notice?</strong> From December to February, <span id="indoor-share">most</span> of my cycling happens indoors. And the walking branch is thick because I love walking: it is my cross-training.</p>
+    <div class="side">
+      <p class="note"><span class="on-mouse">Point along the branches to read any week.</span><span class="on-touch">Drag sideways across the branches to read any week.</span></p>
+    </div>
+  </div>
   <div class="also">
     <h3>Year by year</h3>
     <p class="note" id="also-note"></p>
@@ -203,7 +212,7 @@ cd nestorowicz.nl/climate
 </main>
 
 <footer class="wrap">
-  <p>© 2026 Toni Nestorowicz. Temperature data © KNMI, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Training data my own, from Strava. <a href="https://github.com/professional-cynic/nestorowicz.nl">Code</a> under AGPL-3.0, data under CC BY 4.0.</p>
+  <p>© 2026 Toni Nestorowicz. <a href="https://github.com/professional-cynic/nestorowicz.nl">Code</a> under AGPL-3.0; my training data and the temperatures, © KNMI, under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
   <p>No cookies, trackers or external requests.</p>
 </footer>
 
@@ -5654,7 +5663,7 @@ function draw(){
 }
 
 /* mouse: point to preview, click to keep, click it again or elsewhere to let go.
-   touch: tap a tile to keep it, tap another to switch, tap elsewhere to let go; scrolling and zooming stay the phone's own */
+   touch: tap a tile to keep it, tap another to switch, tap elsewhere to let go; a sideways thumb drag reads (see below), anything else scrolls or zooms */
 function pick(x, y){
   const L = Math.round(N + .5 - (y - top) / rh);
   if (L < MIN || L > N) return null;
@@ -5671,15 +5680,40 @@ function choose(o){
 }
 function hold(on){ pinned = on; redraw(); }
 const at = ev => { const r = cv.getBoundingClientRect(); return pick(ev.clientX - r.left, ev.clientY - r.top); };
-let pointer = 'mouse';
+let pointer = 'mouse', drag = null, dragEnd = 0;
 cv.addEventListener('pointerdown', ev => { pointer = ev.pointerType; });
 cv.addEventListener('pointermove', ev => { if (ev.pointerType === 'mouse' && !pinned) { touch = false; const o = at(ev); if (o) choose(o); } });   // a mouse previews
 cv.addEventListener('pointerleave', ev => { if (ev.pointerType === 'mouse' && !pinned) choose(null); });
 cv.addEventListener('click', ev => {   // the browser fires click only for a real tap or click, never while scrolling
+  if (performance.now() - dragEnd < 400) return;   // the end of a thumb drag is not a tap
   touch = pointer !== 'mouse';
   const o = at(ev), same = o && hot && pinned && o.s === hot.s && o.L === hot.L;
   if (o && !same) { choose(o); hold(true); } else { choose(null); hold(false); }
 });
+
+/* a thumb: the first few pixels decide. Mostly sideways, and the gesture reads the figure: the stretch follows the thumb through
+   time, and up or down changes its length past a small dead zone, so a wobble cannot. Mostly vertical, and the page scrolls. */
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+function nearest(x, y){   // the stretch under a point, or the closest one to it
+  const r = cv.getBoundingClientRect(), L = clamp(Math.round(N + .5 - (y - r.top - top) / rh), MIN, N);
+  return { s: clamp(Math.round((x - r.left - G) / cw - L / 2), 0, N - L), L };
+}
+cv.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  drag = e.touches.length === 1 ? { x: t.clientX, y: t.clientY, L: (hot && pinned ? hot : nearest(t.clientX, t.clientY)).L, mode: '' } : null;   // two fingers: zoom, the phone's own
+}, { passive: true });
+cv.addEventListener('touchmove', e => {
+  if (!drag || e.touches.length !== 1) return;
+  const t = e.touches[0], dx = t.clientX - drag.x, dy = t.clientY - drag.y;
+  if (!drag.mode) { if (Math.hypot(dx, dy) < 5) return; drag.mode = Math.abs(dx) >= Math.abs(dy) ? 'read' : 'scroll'; }
+  if (drag.mode !== 'read') return;
+  e.preventDefault();   // this gesture reads the figure, so the page stays put
+  const lift = Math.sign(dy) * Math.max(0, Math.abs(dy) - 6), L = clamp(drag.L - Math.round(lift / 4), MIN, N);
+  const s = clamp(Math.round((t.clientX - cv.getBoundingClientRect().left - G) / cw - L / 2), 0, N - L);   // the stretch centred under the thumb
+  touch = true; pinned = true; choose({ s, L });
+}, { passive: false });
+cv.addEventListener('touchend', () => { if (drag && drag.mode === 'read') { dragEnd = performance.now(); hold(true); } drag = null; });
+cv.addEventListener('touchcancel', () => { drag = null; });
 document.addEventListener('pointerdown', ev => { if (hot && ev.target !== cv) { choose(null); hold(false); } });   // touching anywhere else lets go (iOS sends no click from plain text)
 cv.addEventListener('keydown', ev => {
   let { s, L } = hot || { s: 0, L: N };
