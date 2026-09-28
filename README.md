@@ -69,7 +69,7 @@ cd sport
 
 ## About me
 
-The CV is the page’s third view. `make_pdf.py` renders that view as a one-page A4 PDF, using the print styles in `index.html`, in the Chromium browser that Playwright drives, so the PDF matches the page but carries none of the date, address and page numbers a browser adds when printing. The first run downloads that Chromium build, about 150 MB. The PDF is generated, so `.gitignore` keeps it out of the repository: it is made fresh whenever the site is published, and can never be older than the page.
+The CV is the page’s third view. `make_pdf.py` renders that view as a one-page A4 PDF, using the print styles in `index.html`, in the Chromium browser that Playwright drives, so the PDF matches the page but carries none of the date, address and page numbers a browser adds when printing. The first run downloads that Chromium build, about 150 MB. The PDF contains the email address, so the page builds its download link with a script, as it does the address itself: neither appears in the HTML for harvesters to find. The PDF is generated, so `.gitignore` keeps it out of the repository: it is made fresh whenever the site is published, and can never be older than the page.
 
 ```sh
 cd about

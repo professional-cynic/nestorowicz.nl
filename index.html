@@ -260,7 +260,6 @@ cd nestorowicz.nl/climate
 <section class="viz" id="about" aria-labelledby="about-h">
   <div class="head">
     <h2 id="about-h">Curriculum vitae</h2>
-    <a href="about/toni-nestorowicz-cv.pdf" download="Toni Nestorowicz CV.pdf">Download as PDF</a>
   </div>
   <section class="cv">
     <h3>Work</h3>
@@ -5612,6 +5611,10 @@ const dark = matchMedia('(prefers-color-scheme: dark)'), still = matchMedia('(pr
 /* email assembled here so it never appears in the HTML source */
 const mail = ['toni', 'nestorowicz.nl'].join('@'), link = document.createElement('a');
 link.href = 'mailto:' + mail; link.textContent = mail; $('mail').replaceWith(link);
+/* the CV's PDF carries the address too, so its link is built here as well: neither appears in the HTML */
+const pdf = document.createElement('a');
+pdf.href = ['about/toni-nestorowicz-cv', 'pdf'].join('.'); pdf.download = 'Toni Nestorowicz CV.pdf'; pdf.textContent = 'Download as PDF';
+document.querySelector('#about .head').append(pdf);
 
 
 /* ======== one view at a time: Climate, Training and About me; without JavaScript all three show ======== */
