@@ -6,22 +6,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cpath%20d='M16%203%2031%2029H1z'%20fill='%23C8322C'/%3E%3Cpath%20d='M6%2021h7l-3%208H2zM17%2023h6l-2%206h-7z'%20fill='%232F6DB5'/%3E%3C/svg%3E">
-<title>Toni Nestorowicz, data scientist</title>
-<meta name="description" content="Toni Nestorowicz, data scientist. Two interactive figures: a century of Dutch temperatures and eight years of my own training.">
+<title>Toni Nestorowicz | Data Scientist</title>
+<meta name="description" content="Toni Nestorowicz, data scientist. Two interactive visualisations: a century of Dutch temperatures and eight years of my own training.">
 <style>
+/* ---- tokens ---- */
 :root{
   --bg:#F4F6F8;--ink:#152029;--muted:#5A6672;--rule:#D6DDE3;--band:#E6EAEE;--winter:rgba(21,32,41,.07);
   --warm:#C8322C;--cool:#2F6DB5;
   --run:#A23E73;--walk:#4E8A3A;--strength:#6A5AA6;--ride:#16756D;--indoor_ride:#4FA69C;
   --serif:Charter,"Bitstream Charter","Sitka Text",Cambria,"Iowan Old Style",Georgia,serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --nav:3.4rem;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#0F161D;--ink:#E5EAEF;--muted:#93A0AC;--rule:#25303B;--band:#1A232C;--winter:rgba(229,234,239,.07);
   --warm:#FF6A5C;--cool:#6FB0FF;
   --run:#E27FB1;--walk:#8CC271;--strength:#A99BE6;--ride:#3DB5A8;--indoor_ride:#8AD3CA;
 }}
+
+/* ---- base ---- */
 *{box-sizing:border-box}
+html{scroll-padding-top:var(--nav)}
 body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.6 var(--sans);-webkit-text-size-adjust:100%}
 .wrap{max-width:68rem;margin-inline:auto;padding-inline:clamp(1.25rem,5vw,3rem)}
 a{color:inherit;text-decoration-color:var(--muted);text-decoration-thickness:1px;text-underline-offset:.2em}
@@ -29,115 +34,158 @@ a:hover{text-decoration-color:currentColor}
 :focus-visible{outline:2px solid var(--warm);outline-offset:3px}
 h1,h2{font-family:var(--serif);font-weight:400;margin:0}
 p{margin:0}
+.nw{white-space:nowrap}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.on-touch{display:none}
+.on-touch,.print{display:none}
 @media (hover:none){.on-touch{display:inline}.on-mouse{display:none}}
 
-html{scroll-padding-top:3.5rem}
-
-/* header */
+/* ---- header ---- */
 .hero{padding-block:clamp(2rem,8vh,5rem) clamp(2.25rem,6vh,3.5rem)}
+.photo{display:block;width:5.5rem;height:auto;margin-bottom:1.25rem}
 h1{font-size:clamp(2.75rem,7.5vw,5.5rem);line-height:.95;letter-spacing:-.035em}
-.lead{font:clamp(1.2rem,2.3vw,1.55rem)/1.4 var(--serif);max-width:29em;margin-top:clamp(1.25rem,3vh,1.75rem);text-wrap:pretty}
+.lead{max-width:29em;margin-top:clamp(1.25rem,3vh,1.75rem);font:clamp(1.2rem,2.3vw,1.55rem)/1.4 var(--serif);text-wrap:pretty}
 .sub{max-width:36em;margin-top:.9rem;color:var(--muted);text-wrap:pretty}
 .sub a{color:var(--ink)}
 .contact{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1.75rem;margin-top:1.5rem;color:var(--muted)}
-.photo{display:block;width:5.5rem;height:auto;margin-bottom:1.25rem}
 @media (min-width:52rem){
   .hero{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:clamp(2rem,5vw,4.5rem);align-items:center}
   .hero > *{grid-column:1}
   .hero .photo{grid-column:2;grid-row:1 / span 4;width:clamp(10rem,17vw,14rem);margin:0}
 }
 
-/* one line of navigation: the two figures and the CV, always at hand; its rule underlines the tabs */
+/* ---- navigation: three views as tabs; the name joins on the right once the header has scrolled away ---- */
 .nav{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--rule)}
 .links{display:flex;align-items:center;gap:clamp(1.25rem,3vw,2rem)}
 .links a{padding:1rem 0 .85rem;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--muted);text-decoration:none}
 .links a:hover{color:var(--ink)}
 .links a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
-.sep{width:1px;height:1.1em;background:var(--rule)}
+.links .me{margin-left:auto;font-family:var(--serif);font-size:1.1rem;color:var(--ink);visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s}
+.stuck .me{visibility:visible;opacity:1}
+@media (max-width:35.99rem){.links .me{display:none}}
+@media (prefers-reduced-motion:reduce){.links .me{transition:none}}
 
-/* the two figures */
-.viz{padding:clamp(1.75rem,4vh,2.5rem) 0 clamp(2.5rem,6vh,4rem)}
+/* ---- views ---- */
+main{min-height:calc(100vh - var(--nav))}   /* every view can scroll its top to the menu, however short */
+.viz{padding-block:clamp(1.75rem,4vh,2.5rem) clamp(2.5rem,6vh,4rem)}
 .viz:not([hidden]) ~ .viz{border-top:1px solid var(--rule)}
-.next{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.75rem 2rem;margin-top:clamp(2rem,5vh,3rem);padding-top:1.25rem;border-top:1px solid var(--rule);font:1.15rem/1.4 var(--serif)}
 .viz h2{font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
-.intro{max-width:38em;margin-top:.75rem;color:var(--muted)}
 .lede{max-width:34em;margin-top:.75rem;font:clamp(1.1rem,2vw,1.3rem)/1.45 var(--serif)}
-.lede:empty{min-height:1.45em}
-.read{max-width:38em}
-.warm{color:var(--warm)}.cool{color:var(--cool)}
-.note{margin-top:.5rem;color:var(--muted);font-size:.9375rem}
+.intro{max-width:38em;margin-top:.75rem;color:var(--muted)}
+.warm{color:var(--warm)}
+.cool{color:var(--cool)}
+.note{color:var(--muted);font-size:.9375rem}
+.pair{display:grid;align-items:start;gap:1rem 3rem;margin-top:.25rem}
+.pair > p{max-width:36em}
+.side{display:grid;align-content:start;gap:.6rem;order:-1}
+.side .note{text-wrap:balance}
+@media (min-width:66rem){.pair{grid-template-columns:minmax(0,36em) minmax(0,1fr)}.side{order:0;justify-items:end;text-align:right}}
 details{margin-top:2rem}
-.cols{columns:2 24rem;column-gap:3rem;margin-top:1rem}
-.cols > *{break-inside:avoid;margin:0 0 1rem}
-summary{cursor:pointer;font-weight:600;width:fit-content}
-details p{font-size:.9375rem}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:1rem 0 0;padding:1rem;background:var(--band);font:.8125rem/1.5 ui-monospace,Menlo,Consolas,monospace}
+summary{width:fit-content;font-weight:600;cursor:pointer}
+.cols{columns:2 24rem;column-gap:3rem;margin-top:1rem;font-size:.9375rem}
+.cols > *{margin:0 0 1rem;break-inside:avoid}
+pre{padding:1rem;background:var(--band);font:.8125rem/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.next{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.75rem 2rem;margin-top:clamp(2rem,5vh,3rem);padding-top:1.25rem;border-top:1px solid var(--rule);font:1.15rem/1.4 var(--serif)}
 
-/* climate */
+/* ---- climate ---- */
 #field{display:block;width:100%;margin:clamp(1.25rem,3vh,2rem) 0 1rem;touch-action:manipulation;cursor:crosshair;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #field[hidden]{display:none}
 .still{display:block;width:100%;height:auto;margin:1.5rem 0}
-.pair{display:grid;align-items:start;gap:1rem 3rem;margin-top:.25rem}
-.side{display:grid;align-content:start;gap:.6rem;order:-1}
-.side .note{margin:0}
-.side .note{text-wrap:balance}
-@media (min-width:66rem){.pair{grid-template-columns:minmax(0,36em) minmax(0,1fr)}.side{order:0;justify-items:end;text-align:right}}
-.fade{display:flex;align-items:center;gap:.5rem;width:fit-content;margin:0;color:var(--muted);font-size:.9375rem;cursor:pointer}
+.fade{display:flex;align-items:center;gap:.5rem;width:fit-content;color:var(--muted);font-size:.9375rem;cursor:pointer}
 .fade[hidden]{display:none}
 .fade input{margin:0;width:1rem;height:1rem;accent-color:var(--warm);cursor:pointer}
 
-/* sport: HTML lanes for layout and labels, one SVG behind them for the drawing */
-.legend{position:absolute;top:2px;left:0;display:flex;align-items:center;gap:.45rem;margin:0;font-size:.8125rem;line-height:1.5;color:var(--muted);pointer-events:none}
-.scrub .legend{opacity:0}
-.sw{width:.8em;height:1.1em;background:var(--winter)}
+/* ---- training: HTML lanes for layout and labels, one SVG behind them for the drawing ---- */
 .tree{position:relative;margin:clamp(1.25rem,3vh,2rem) 0 .25rem;padding:30px 0;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .tree:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
 .plant{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;font:12px var(--sans)}
 .plant text,.fd text{fill:var(--muted)}
+.legend{position:absolute;top:2px;left:0;display:flex;align-items:center;gap:.45rem;font-size:.8125rem;line-height:1.5;color:var(--muted);pointer-events:none}
+.sw{width:.8em;height:1.1em;background:var(--winter)}
+.chip{position:absolute;top:0;z-index:2;transform:translateX(-50%);padding:.4rem .5rem;background:var(--ink);color:var(--bg);font-size:.8125rem;line-height:1;white-space:nowrap;pointer-events:none;opacity:0}
+.scrub .chip{opacity:1}
+.scrub .legend{opacity:0}
 .lane{display:grid;grid-template-columns:8.5rem minmax(0,1fr);column-gap:1.5rem;align-items:center}
-.lab{position:relative;padding:.35rem 0}
+.lab{padding:.35rem 0}
 .slot{height:88px}
 .nm{font-weight:600;line-height:1.35}
 .nm .n{white-space:nowrap}
-.nm .n::before{content:"";display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--c);margin-right:.5rem}
+.nm .n::before{content:"";display:inline-block;width:.6rem;height:.6rem;margin-right:.5rem;border-radius:50%;background:var(--c)}
 .val{display:block;font-weight:400;color:var(--muted);font-size:.9375rem;white-space:nowrap}
 .scrub .val{color:var(--ink)}
-@media (max-width:51.99rem){.val{display:inline}.lane{display:block}.lab{padding:.75rem 0 0}.slot{height:60px}}
-.chip{position:absolute;top:0;z-index:2;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:.8125rem;line-height:1;padding:.4rem .5rem;white-space:nowrap;pointer-events:none;opacity:0}
-.scrub .chip{opacity:1}
+@media (max-width:51.99rem){.lane{display:block}.lab{padding:.75rem 0 0}.val{display:inline}.slot{height:60px}}
 .err{padding:2rem 0;color:var(--muted)}
-.aside{max-width:38em}
 .also{margin-top:clamp(2.5rem,6vh,3.5rem)}
-.also h3{font-size:1.125rem;margin:0}
+.also h3{margin:0;font-size:1.125rem}
+.also h3 + .note{margin-top:.35rem}
 .fgrid{display:grid;gap:2rem 2.25rem;margin-top:1.25rem}
 @media (min-width:36rem){.fgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:60rem){.fgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.fd{display:grid;grid-template-rows:subgrid;grid-row:span 3;row-gap:0;align-content:start;border-top:1px solid var(--rule);padding-top:.75rem}
-.fd h4{font-size:1rem;margin:0;line-height:1.3}
-.fd .unit{font-size:.875rem;line-height:1.4;color:var(--muted);margin-top:.2rem}
-.fd svg{display:block;margin:.5rem 0 0;overflow:visible;font:12px var(--sans)}
+.fd{display:grid;grid-template-rows:subgrid;grid-row:span 3;row-gap:0;align-content:start;padding-top:.75rem;border-top:1px solid var(--rule)}
+.fd h4{margin:0;font-size:1rem;line-height:1.3}
+.fd .unit{margin-top:.2rem;color:var(--muted);font-size:.875rem;line-height:1.4}
+.fd svg{display:block;margin-top:.5rem;overflow:visible;font:12px var(--sans)}
 
-footer p:first-child{flex:1 1 24rem;max-width:44em}
-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;padding:2rem 0 3rem;border-top:1px solid var(--rule);font-size:.875rem;color:var(--muted)}
+/* ---- about me ---- */
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.5rem 2rem}
+.cv{display:grid;gap:1rem 3rem;padding-block:clamp(1.5rem,4vh,2.25rem)}
+.cv + .cv{border-top:1px solid var(--rule)}
+@media (min-width:52rem){.cv{grid-template-columns:12rem minmax(0,1fr)}}
+.cv h3{margin:0;font:1.35rem/1.3 var(--serif)}
+.cv ol{display:grid;gap:1.75rem;margin:0;padding:0;list-style:none}
+.row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:0 1.5rem}
+.cv h4{margin:0;font-size:1rem;font-weight:600}
+.when{color:var(--muted);font-size:.9375rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.org{color:var(--muted)}
+.cv li p{max-width:40em;margin-top:.35rem}
+
+/* ---- footer ---- */
+footer{padding-block:0 3rem;color:var(--muted);font-size:.875rem}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;padding-top:2rem;border-top:1px solid var(--rule)}   /* the rule spans the text, like every rule above it */
+.foot p:first-child{flex:1 1 24rem;max-width:44em}
+
+/* ---- print: the About me view as a one-page CV (about/make_pdf.py) ---- */
+@media print{
+  @page{margin:12mm 15mm}
+  :root{--bg:#fff;--ink:#000;--muted:#444;--rule:#bbb}
+  body{font-size:9pt;line-height:1.38}
+  .nav,.sub,#climate,#training,.head,.next,footer{display:none}
+  main{min-height:0}
+  #about{display:block;padding:0}
+  .wrap{max-width:none;padding-inline:0}
+  a{text-decoration:none}
+  .print{display:inline}
+  .hero{display:grid;grid-template-columns:22mm 1fr;column-gap:6mm;align-items:center;padding-block:0 3mm}
+  .hero > *{grid-column:2}
+  .hero .photo{grid-column:1;grid-row:1 / span 3;width:22mm;margin:0}
+  h1{font-size:22pt}
+  .lead{max-width:none;margin-top:2mm;font-size:10.5pt}
+  .contact{margin-top:2mm}
+  .contact a[href*="linkedin"]::after{content:": linkedin.com/in/toni-nestorowicz"}
+  .cv{grid-template-columns:26mm 1fr;gap:0 7mm;padding-block:3mm;border-top:1px solid var(--rule)}
+  .cv h3{font-size:12pt}
+  .cv h4{font-size:10pt}
+  .when{font-size:9pt}
+  .cv ol{gap:2.5mm}
+  .cv li{break-inside:avoid}
+  .cv li p{max-width:none;margin-top:.5mm}
+}
 </style>
 </head>
 <body>
-<header class="wrap hero">
+<header class="wrap hero" id="top">
   <img class="photo" width="240" height="240" alt="Portrait of Toni Nestorowicz" src="data:image/webp;base64,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">
   <h1>Toni Nestorowicz</h1>
   <p class="lead">Data scientist, driven by curiosity and a simple belief: anything can be improved. Right now I apply it to defect detection in manufacturing, using conventional and AI-driven computer vision to reduce production stops.</p>
   <p class="sub">Outside work I run races, sometimes onto the podium, and cycle a lot. Below are two things I care about, as data: <a href="#climate">the climate</a> and <a href="#training">my training</a>.</p>
-  <p class="contact"><span id="mail">Email: my first name at this domain</span><a href="https://www.linkedin.com/in/toni-nestorowicz">LinkedIn</a></p>
+  <p class="contact"><span id="mail">Email: my first name at this domain</span><a href="https://www.linkedin.com/in/toni-nestorowicz">LinkedIn</a><a class="print" href="https://nestorowicz.nl/">nestorowicz.nl</a></p>
 </header>
 
 <nav class="nav" aria-label="Site">
   <div class="wrap links">
     <a href="#climate">Climate</a>
     <a href="#training">Training</a>
-    <span class="sep" aria-hidden="true"></span>
-    <a href="cv/">CV</a>
+    <a href="#about">About me</a>
+    <a class="me" href="#top">Toni Nestorowicz</a>
   </div>
 </nav>
 
@@ -145,10 +193,10 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;
 <section class="viz" id="climate" aria-labelledby="climate-h">
   <h2 id="climate-h">The longer you look, the clearer it gets</h2>
   <p class="intro">Each of the 6,786 tiles is one stretch of ten years or more in the De Bilt temperature record, sitting above the years it spans: <span class="warm">warm colours</span> if it warmed, <span class="cool">blue</span> if it cooled, stronger for faster change.</p>
-  <canvas id="field" hidden tabindex="0" role="img" aria-label="All 6,786 stretches of ten years or more in the De Bilt record, 1901 to 2025, as a triangle of tiles above the years they span. Along the base, ten-year stretches are a mix of warming and cooling; no stretch of 46 years or more cooled, and the most recent stretches warmed fastest. Arrow keys move between stretches."></canvas>
-  <noscript><img class="still" src="climate/triangle.png" alt="Every stretch of ten years or more in the De Bilt record, 1901 to 2025, as a triangle of tiles. No stretch of 46 years or more cooled."></noscript>
+  <canvas id="field" hidden tabindex="0" role="img" aria-label="All 6,786 stretches of ten years or more in the De Bilt record, 1901 to 2025, as a triangle of tiles above the years they span. Along the base, ten-year stretches are a mix of warming and cooling; no stretch of 46&nbsp;years or more cooled, and the most recent stretches warmed fastest. Arrow keys move between stretches."></canvas>
+  <noscript><img class="still" src="climate/triangle.png" alt="Every stretch of ten years or more in the De Bilt record, 1901 to 2025, as a triangle of tiles. No stretch of 46&nbsp;years or more cooled."></noscript>
   <div class="pair">
-    <p class="read">Short stretches go both ways: of the 116 ten-year stretches, 72 warmed and 44 cooled, but only 4 by more than the year-to-year noise. Above the dashed line, at 46 years or more, none cooled. The warming has also sped up: the 46 years to 2025 warmed almost three times as fast as the 46 years to 1960.</p>
+    <p class="read">Short stretches go both ways: of the 116 ten-year stretches, 72 warmed and 44 cooled, but only 4 by more than the year-to-year noise. Above the dashed line, at 46&nbsp;years or more, none cooled. The warming has also sped up: the 46&nbsp;years to 2025 warmed almost three times as fast as the 46&nbsp;years to 1960.</p>
     <div class="side">
       <p class="note"><span class="on-mouse">Point at a tile to see its years; click to keep it, and click it again to let go.</span><span class="on-touch">Tap a tile, or drag across the triangle: sideways moves the stretch through time, up and down changes its length. Tap outside it to let go.</span></p>
       <label class="fade" hidden><input type="checkbox" id="fade"> Fade trends that could be zero</label>
@@ -159,28 +207,28 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 2rem;
     <summary>How this was made</summary>
     <div class="cols">
     <p><strong>Data.</strong> Daily mean temperature at De Bilt, one of the five principal stations in KNMI’s <a href="https://dataplatform.knmi.nl/dataset/homogenization-daily-temperature-principal-stations-netherlands-1-0">homogenised temperature dataset</a> (version 2, 2026), averaged over each complete year from 1901 to 2025.</p>
-    <p><strong>Tiles.</strong> Each tile is the least-squares trend of one stretch. It sits above the middle of its years, one row higher for each extra year, so every stretch lies above the shorter stretches it contains. Colour runs from grey at no change to the strongest red or blue at 0.7 °C per decade or more. The bars below show each year against the 1901–2025 average. Computing the trend of every possible period is an established technique in climate and hydrology research (Liebmann et al., 2010, <a href="https://doi.org/10.1175/2010BAMS3030.1">doi:10.1175/2010BAMS3030.1</a>; Hannaford et al., 2013, <a href="https://doi.org/10.5194/hess-17-2717-2013">doi:10.5194/hess-17-2717-2013</a>).</p>
-    <p><strong>Uncertainty.</strong> The switch under the figure fades every stretch whose 95% interval for the trend includes zero. The interval is widened for the slight persistence from one year to the next (lag-1 autocorrelation 0.13), using the effective sample size of Santer et al. (2008, <a href="https://doi.org/10.1002/joc.1756">doi:10.1002/joc.1756</a>). For 96% of stretches shorter than 20 years it includes zero, so their colour reflects noise as much as climate. Overlapping stretches share most of their years, so the fade is a guide rather than a formal test.</p>
-    <p><strong>Limits.</strong> This is one station, and the uncertainty of the homogenisation is not shown. KNMI deliberately does not correct for gradual changes around the station, such as urbanisation. The 46-year threshold is a knife edge: the longest cooling stretch, 1943 to 1987, cooled by 0.02 °C per decade, and the weakest 46-year stretch warmed by less than 0.01. The figure shows how the temperature changed, not why.</p>
-    <p><strong>Reproduce</strong> the figure and every number above with <a href="https://github.com/professional-cynic/nestorowicz.nl/tree/main/climate">one script</a>; it needs only <a href="https://docs.astral.sh/uv/">uv</a>.</p>
+    <p><strong>Tiles.</strong> Each tile is the least-squares trend of one stretch. It sits above the middle of its years, one row higher for each extra year, so every stretch lies above the shorter stretches it contains. Colour runs from grey at no change to the strongest red or blue at 0.7&nbsp;°C per decade or more. The bars below show each year against the 1901–2025 average. Computing the trend of every possible period is an established technique in climate and hydrology research (Liebmann et al., 2010, <a href="https://doi.org/10.1175/2010BAMS3030.1">doi:10.1175/2010BAMS3030.1</a>; Hannaford et al., 2013, <a href="https://doi.org/10.5194/hess-17-2717-2013">doi:10.5194/hess-17-2717-2013</a>).</p>
+    <p><strong>Uncertainty.</strong> The switch ‘Fade trends that could be zero’ fades every stretch whose 95% interval for the trend includes zero. The interval is widened for the slight persistence from one year to the next (lag-1 autocorrelation 0.13), using the effective sample size of Santer et al. (2008, <a href="https://doi.org/10.1002/joc.1756">doi:10.1002/joc.1756</a>). For 96% of stretches shorter than 20&nbsp;years it includes zero, so their colour reflects noise as much as climate. Overlapping stretches share most of their years, so the fade is a guide rather than a formal test.</p>
+    <p><strong>Limits.</strong> This is one station, and the uncertainty of the homogenisation is not shown. KNMI deliberately does not correct for gradual changes around the station, such as urbanisation. The 46-year threshold is a knife edge: the longest cooling stretch, 1943 to 1987, cooled by 0.02&nbsp;°C per decade, and the weakest 46-year stretch warmed by less than 0.01. The visualisation shows how the temperature changed, not why.</p>
+    <p><strong>Reproduce</strong> the visualisation and every number above with <a href="https://github.com/professional-cynic/nestorowicz.nl/tree/main/climate">one script</a>; it needs only <a href="https://docs.astral.sh/uv/">uv</a>.</p>
 <pre tabindex="0"><code>git clone \
   https://github.com/professional-cynic/nestorowicz.nl
 cd nestorowicz.nl/climate
 ./triangle.py</code></pre>
     </div>
   </details>
-  <p class="next"><a href="#training">Next: how my training branched out</a><a href="cv/">Read my CV</a></p>
+  <p class="next"><a href="#training">Next: how my training branched out</a><a href="#about">About me</a></p>
 </section>
 
 <section class="viz" id="training" aria-labelledby="training-h">
   <h2 id="training-h">How my training branched out</h2>
   <p class="lede" id="lede"></p>
-  <p class="intro">One branch per sport, sprouting at my first session. Each hair is a week: the longer, the more hours.</p>
+  <p class="intro">One branch per sport, sprouting at my first session.<br>Each hair is a week: the longer, the more hours.</p>
   <figure class="tree" id="tree" tabindex="0" aria-label="Weekly training hours by sport since 2018. Left and right arrow keys move through the weeks; hold Shift to move four at a time.">
     <svg class="plant" id="plant" aria-hidden="true"></svg>
     <div class="chip" id="chip"></div>
     <p class="legend" id="legend"><span class="sw" aria-hidden="true"></span>Winter, December to February</p>
-    <div id="lanes"><noscript><p class="err">This figure is drawn by JavaScript.</p></noscript></div>
+    <div id="lanes"><noscript><p class="err">This visualisation is drawn by JavaScript.</p></noscript></div>
   </figure>
   <div class="pair">
     <p class="aside"><strong>Did you notice?</strong> From December to February, <span id="indoor-share">most</span> of my cycling happens indoors. And the walking branch is thick because I love walking: it is my cross-training.</p>
@@ -196,7 +244,7 @@ cd nestorowicz.nl/climate
   <details>
     <summary>How this was made</summary>
     <div class="cols">
-    <p><strong>Data.</strong> My own Strava export, reduced to the local date, sport and moving time of each session since 2018, plus the distance of runs over 1 km and outdoor rides over 5 km. Indoor distances are simulated, so they are left out.</p>
+    <p><strong>Data.</strong> My own Strava export, reduced to the local date, sport and moving time of each session since 2018, plus the distance of runs over 1&nbsp;km and outdoor rides over 5&nbsp;km. Indoor distances are simulated, so they are left out.</p>
     <p><strong>Branches.</strong> Each hair is the moving time of one week, Monday to Sunday, mirrored around the stem, and all branches share one scale, so their thickness can be compared directly. A branch leaves the cycling stem at the date of its first session: it marks when a sport started, not that it grew out of cycling.</p>
     <p><strong>Charts.</strong> Calendar years, from the first complete one; the hollow point is this year so far. Pace is total moving time divided by total distance; speed is total distance divided by total moving time.</p>
     <p><strong>Limits.</strong> Only what I recorded counts. Moving time leaves out stops, and a week with no session may be a rest week or a week I forgot to record.</p>
@@ -207,13 +255,93 @@ cd nestorowicz.nl/climate
     <p>The layout borrows from spindle diagrams in palaeontology and from Tufte’s small multiples.</p>
     </div>
   </details>
-  <p class="next"><a href="#climate">Back to the climate</a><a href="cv/">Read my CV</a></p>
+  <p class="next"><a href="#climate">Back to the climate</a><a href="#about">About me</a></p>
+</section>
+<section class="viz" id="about" aria-labelledby="about-h">
+  <div class="head">
+    <h2 id="about-h">Curriculum vitae</h2>
+    <a href="about/toni-nestorowicz-cv.pdf" download="Toni Nestorowicz CV.pdf">Download as PDF</a>
+  </div>
+  <section class="cv">
+    <h3>Work</h3>
+    <ol>
+      <li>
+        <div class="row"><h4>Research intern</h4><span class="when"><time datetime="2026-09">Sep 2026</time> – <time datetime="2027-01">Jan 2027</time></span></div>
+        <p class="org">Leiden Institute of Advanced Computer Science, part of my MSc Health, Ageing and Society</p>
+        <p>I am testing whether an open language model running on university hardware can reproduce a qualitative analysis of interviews with Dutch older adults about vitality, and whether it portrays them as the researcher did or reads decline where they describe adjustment.</p>
+      </li>
+      <li>
+        <div class="row"><h4>Operational Excellence Analyst</h4><span class="when"><time datetime="2025-11">Nov 2025</time> – now</span></div>
+        <p class="org">Strohm, IJmuiden</p>
+        <p>My work centres on defect detection in manufacturing: image acquisition and preprocessing, conventional computer vision algorithms, object detection with RF-DETR, and the tools that support them. The result outperforms what was used before and now runs in production. Along the way I set up much of the data acquisition and automation it depends on.</p>
+      </li>
+      <li>
+        <div class="row"><h4>People Analytics intern</h4><span class="when"><time datetime="2025-04">Apr</time> – <time datetime="2025-10">Oct 2025</time></span></div>
+        <p class="org">Strohm, IJmuiden</p>
+        <p>Alongside analysing business processes and HR data, I implemented a new HRM system.</p>
+      </li>
+      <li>
+        <div class="row"><h4>Teaching assistant</h4><span class="when"><time datetime="2022-08">Aug</time> – <time datetime="2022-11">Nov 2022</time></span></div>
+        <p class="org">Leiden University</p>
+        <p>I helped teach environmental data analysis with Python.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="cv">
+    <h3>Projects</h3>
+    <ol>
+      <li>
+        <h4><a href="https://github.com/professional-cynic/tsia">TSIA</a></h4>
+        <p class="org">Toni’s Simple Image Annotator, open source</p>
+        <p>TSIA is a desktop app for drawing bounding boxes on images and exporting them as COCO or YOLO datasets. It runs as a single binary with no server, and almost everything works from the keyboard.</p>
+      </li>
+      <li>
+        <h4><a href="https://nestorowicz.nl/">nestorowicz.nl</a></h4>
+        <p class="org">Two interactive visualisations, open source</p>
+        <p>A century of De Bilt temperatures and eight years of my own training, each computed in the browser and reproducible from <a href="https://github.com/professional-cynic/nestorowicz.nl">open scripts</a>.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="cv">
+    <h3>Education</h3>
+    <ol>
+      <li>
+        <div class="row"><h4>MSc Health, Ageing and Society</h4><span class="when">2024–2027, part-time</span></div>
+        <p class="org">Leiden University Medical Center</p>
+      </li>
+      <li>
+        <div class="row"><h4>MSc Industrial Ecology</h4><span class="when">2021–2024</span></div>
+        <p class="org">TU Delft and Leiden University</p>
+        <p>Thesis: <cite>Improving Sustainability Communication with Generative AI</cite></p>
+      </li>
+      <li>
+        <div class="row"><h4>Leiden Leadership Programme</h4><span class="when">2022–2023</span></div>
+        <p class="org">Leiden University, honours programme</p>
+        <p>The project used qualitative methods to study the challenges international students face in the Netherlands.</p>
+      </li>
+      <li>
+        <div class="row"><h4>BSc Economics and Business Economics</h4><span class="when">2018–2021</span></div>
+        <p class="org">Utrecht University</p>
+        <p>Thesis: <cite>Assessing Sentiments in Social Media Regarding Sustainable Eating Patterns</cite></p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="cv">
+    <h3>Languages</h3>
+    <p>Polish, native. English, C1+. Dutch, B2+.</p>
+  </section>
+  <p class="next"><a href="#climate">Back to the climate</a><a href="#training">How my training branched out</a></p>
 </section>
 </main>
 
 <footer class="wrap">
-  <p>© 2026 Toni Nestorowicz. <a href="https://github.com/professional-cynic/nestorowicz.nl">Code</a> under AGPL-3.0; my training data and the temperatures, © KNMI, under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
-  <p>No cookies, trackers or external requests.</p>
+  <div class="foot">
+    <p>©&nbsp;2026 Toni Nestorowicz. <a href="https://github.com/professional-cynic/nestorowicz.nl">Code</a> under <span class="nw">AGPL-3.0</span>; my training data and the temperatures, ©&nbsp;KNMI, under <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0</a>.</p>
+    <p>No cookies, trackers or external requests.</p>
+  </div>
 </footer>
 
 <script id="sessions" type="text/csv">
@@ -5486,22 +5614,25 @@ const mail = ['toni', 'nestorowicz.nl'].join('@'), link = document.createElement
 link.href = 'mailto:' + mail; link.textContent = mail; $('mail').replaceWith(link);
 
 
-/* ======== one figure at a time: the Climate and Sport links switch between them; without JavaScript both show ======== */
+/* ======== one view at a time: Climate, Training and About me; without JavaScript all three show ======== */
 {
 const nav = document.querySelector('.nav'), main = document.querySelector('main');
-const views = [...nav.querySelectorAll('.links a[href^="#"]')], ids = views.map(a => a.hash.slice(1)), panels = ids.map(id => $(id));
+const views = [...nav.querySelectorAll('.links a[href^="#"]:not(.me)')], ids = views.map(a => a.hash.slice(1)), panels = ids.map(id => $(id));
 function show(id, scroll = false){
   panels.forEach((p, i) => { p.hidden = p.id !== id; if (p.id === id) views[i].setAttribute('aria-current', 'true'); else views[i].removeAttribute('aria-current'); });
   if (!scroll) return;
-  try { history.replaceState(null, '', '#' + id); } catch {}   // refused in sandboxed previews and some local files; the figure still switches
+  try { history.replaceState(null, '', '#' + id); } catch {}   // refused in sandboxed previews and some local files; the view still switches
   scrollTo({ top: main.getBoundingClientRect().top + scrollY - nav.offsetHeight + 1, behavior: still ? 'auto' : 'smooth' });
 }
 document.addEventListener('click', e => {
-  const a = e.target.closest('a[href^="#"]'); if (!a || !ids.includes(a.hash.slice(1))) return;
+  const a = e.target.closest('a[href^="#"]');
+  if (a && a.classList.contains('me')) { e.preventDefault(); scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' }); return; }   // back to the header, same view
+  if (!a || !ids.includes(a.hash.slice(1))) return;
   e.preventDefault(); show(a.hash.slice(1), true);
 });
 addEventListener('hashchange', () => { if (ids.includes(location.hash.slice(1))) show(location.hash.slice(1)); });
 show(ids.includes(location.hash.slice(1)) ? location.hash.slice(1) : ids[0]);
+new IntersectionObserver(([e]) => nav.classList.toggle('stuck', !e.isIntersecting && e.boundingClientRect.top < 0)).observe($('top'));   // the name shows once the header has gone
 }
 
 /* ======== climate: every stretch of ten years or more as one tile, above the years it spans ======== */
@@ -5691,7 +5822,7 @@ cv.addEventListener('click', ev => {   // the browser fires click only for a rea
   if (o && !same) { choose(o); hold(true); } else { choose(null); hold(false); }
 });
 
-/* a thumb: the first few pixels decide. Mostly sideways, and the gesture reads the figure: the stretch follows the thumb through
+/* a thumb: the first few pixels decide. Mostly sideways, and the gesture reads the visualisation: the stretch follows the thumb through
    time, and up or down changes its length past a small dead zone, so a wobble cannot. Mostly vertical, and the page scrolls. */
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 function nearest(x, y){   // the stretch under a point, or the closest one to it
@@ -5707,7 +5838,7 @@ cv.addEventListener('touchmove', e => {
   const t = e.touches[0], dx = t.clientX - drag.x, dy = t.clientY - drag.y;
   if (!drag.mode) { if (Math.hypot(dx, dy) < 5) return; drag.mode = Math.abs(dx) >= Math.abs(dy) ? 'read' : 'scroll'; }
   if (drag.mode !== 'read') return;
-  e.preventDefault();   // this gesture reads the figure, so the page stays put
+  e.preventDefault();   // this gesture reads the visualisation, so the page stays put
   const lift = Math.sign(dy) * Math.max(0, Math.abs(dy) - 6), L = clamp(drag.L - Math.round(lift / 4), MIN, N);
   const s = clamp(Math.round((t.clientX - cv.getBoundingClientRect().left - G) / cw - L / 2), 0, N - L);   // the stretch centred under the thumb
   touch = true; pinned = true; choose({ s, L });
@@ -5732,7 +5863,7 @@ const box = $('fade'); box.parentElement.hidden = false;
 box.addEventListener('change', () => { faded = box.checked; paint(); draw(); });
 colours(); new ResizeObserver(() => requestAnimationFrame(layout)).observe(cv);   // resizing inside the callback would re-trigger it
 dark.addEventListener('change', () => { colours(); paint(); draw(); });
-if (!still) {   // once, when the figure comes into view: the tiles rise from the ten-year base to the whole record
+if (!still) {   // once, when the visualisation comes into view: the tiles rise from the ten-year base to the whole record
   k = 0; let t0 = 0;
   const rise = t => { t0 = t0 || t; const f = Math.min(1, (t - t0) / 1600); k = 1 - (1 - f) ** 3; draw(); if (f < 1) requestAnimationFrame(rise); };
   const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); setTimeout(() => requestAnimationFrame(rise), 250); } }, { threshold: .25 });
@@ -5749,7 +5880,7 @@ const ORDER = ['run', 'walk', 'strength', 'ride', 'indoor_ride'], TRUNK = 'ride'
 const MS = 864e5, GROW_MS = 2600;
 const nf = new Intl.NumberFormat('en-GB'), d1 = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
 const fmtDate = (day, o = { day: 'numeric', month: 'short', year: 'numeric' }) => new Date(day * MS).toLocaleDateString('en-GB', { ...o, timeZone: 'UTC' });
-const fmtDur = min => { const t = Math.round(min), h = Math.floor(t / 60), m = t % 60; return h ? (m ? `${h} h ${m} min` : `${h} h`) : `${m} min`; };
+const fmtDur = min => { const t = Math.round(min), h = Math.floor(t / 60), m = t % 60; return h ? (m ? `${h}\u00a0h ${m}\u00a0min` : `${h}\u00a0h`) : `${m}\u00a0min`; };
 const mmss = v => { const t = Math.round(v * 60); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
 const pctR = v => `${Math.round(v * 100)}%`;
 const f = n => Math.round(n * 10) / 10;
@@ -5793,7 +5924,7 @@ function build(csv){
   lanesEl.textContent = '';
   const L = ORDER.map(k => {
     const el = document.createElement('div'), total = wk[k].reduce((a, v) => a + v, 0);
-    const def = `${nf.format(Math.round(total))} h`;
+    const def = `${nf.format(Math.round(total))}\u00a0h`;
     el.className = 'lane'; el.style.setProperty('--c', `var(--${k})`);
     el.innerHTML = `<div class="lab"><p class="nm"><span class="n">${NAMES[k]}</span> <span class="val">${def}</span></p></div><div class="slot"></div>`;
     lanesEl.appendChild(el);
@@ -5866,7 +5997,7 @@ function build(csv){
     chip.textContent = `Week of ${fmtDate(mon)}: ${wTot ? fmtDur(wTot * 60) : 'rest'}`;
     const cw = chip.offsetWidth, tw = tree.clientWidth;
     chip.style.left = Math.max(cw / 2, Math.min(tw - cw / 2, x)) + 'px';
-    chip.style.top = y === null ? '0' : Math.max(0, y - 56) + 'px';   // on touch, above the finger rather than at the top of a tall figure
+    chip.style.top = y === null ? '0' : Math.max(0, y - 56) + 'px';   // on touch, above the finger rather than at the top of a tall visualisation
     L.forEach(l => { const v = wk[l.k][w]; l.val.textContent = w < bWeek(l.k) ? 'not started' : v ? fmtDur(v * 60) : 'none'; });
   }
   const weekAt = e => {
@@ -5874,7 +6005,7 @@ function build(csv){
     return x < G.x0 - 8 || x > G.x1 + 8 ? null : Math.max(0, Math.min(W - 1, Math.floor((x - G.x0) / (G.x1 - G.x0) * W)));
   };
   const fingerY = e => e.clientY - tree.getBoundingClientRect().top;
-  let touchAt = null;   // on touch only a tap or a sideways drag reads a week, so a swipe that starts on the figure just scrolls
+  let touchAt = null;   // on touch only a tap or a sideways drag reads a week, so a swipe that starts on the visualisation just scrolls
   tree.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') touchAt = { x: e.clientX, y: e.clientY, reading: false }; });
   tree.addEventListener('pointermove', e => {
     if (e.pointerType === 'mouse') return setWeek(weekAt(e));
@@ -5938,13 +6069,13 @@ function build(csv){
   }
   const up = fn => fn(Bf) > fn(A), rA = med(Yr[A].runs), rB = med(Yr[Bf].runs), bA = med(Yr[A].rides), bB = med(Yr[Bf].rides);
   const items = [
-    { h: `Runs got ${up(S.pace) ? 'slower' : 'faster'}${rB > rA ? ' and longer' : rB < rA ? ' and shorter' : ''}`, unit: `Pace per km, faster is higher. Median run ${d1.format(rA)} to ${d1.format(rB)} km.`,
+    { h: `Runs got ${up(S.pace) ? 'slower' : 'faster'}${rB > rA ? ' and longer' : rB < rA ? ' and shorter' : ''}`, unit: `Pace per km, faster is higher. Median run ${d1.format(rA)} to ${d1.format(rB)}\u00a0km.`,
       chart: VW => spark(S.pace, { color: 'var(--run)', invert: true, fmt: mmss }, VW) },
-    { h: `Rides got ${up(S.speed) ? 'faster' : 'slower'}${bB < bA ? ' and shorter' : bB > bA ? ' and longer' : ''}`, unit: `Outdoor speed, km/h. Median ride ${nf.format(Math.round(bA))} to ${nf.format(Math.round(bB))} km.`,
+    { h: `Rides got ${up(S.speed) ? 'faster' : 'slower'}${bB < bA ? ' and shorter' : bB > bA ? ' and longer' : ''}`, unit: `Outdoor speed, km/h. Median ride ${nf.format(Math.round(bA))} to ${nf.format(Math.round(bB))}\u00a0km.`,
       chart: VW => spark(S.speed, { color: 'var(--ride)', fmt: v => d1.format(v) }, VW) },
-    { h: S.share(Bf) >= .9 ? 'Almost every day' : 'Most days', unit: `Days with a session. Longest streak ${best.n} days.`,
+    { h: S.share(Bf) >= .9 ? 'Almost every day' : 'Most days', unit: `Days with a session. Longest streak ${best.n}\u00a0days.`,
       chart: VW => spark(S.share, { color: 'var(--ink)', fmt: pctR }, VW) },
-    { h: up(S.perDay) && !up(S.avg) ? 'More, shorter sessions' : 'Sessions per active day', unit: `Sessions per active day. Average session ${Math.round(S.avg(A))} to ${Math.round(S.avg(Bf))} min.`,
+    { h: up(S.perDay) && !up(S.avg) ? 'More, shorter sessions' : 'Sessions per active day', unit: `Sessions per active day. Average session ${Math.round(S.avg(A))} to ${Math.round(S.avg(Bf))}\u00a0min.`,
       chart: VW => spark(S.perDay, { color: 'var(--ink)', fmt: v => d1.format(v) }, VW) },
   ];
   $('also-note').textContent = `${A} to ${yN}; the hollow point is ${yN} so far.`;

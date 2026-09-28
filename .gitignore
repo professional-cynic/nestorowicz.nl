@@ -1,0 +1,8 @@
+# raw Strava export: personal data, never publish
+activities.csv
+**/activities.csv
+
+# generated files: made by the scripts, never committed
+about/toni-nestorowicz-cv.pdf
+climate/trends.csv
+__pycache__/
