@@ -16,7 +16,7 @@
   --run:#A23E73;--walk:#4E8A3A;--strength:#6A5AA6;--ride:#16756D;--indoor_ride:#4FA69C;
   --serif:Charter,"Bitstream Charter","Sitka Text",Cambria,"Iowan Old Style",Georgia,serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --nav:3.4rem;
+  --nav:3.75rem;   /* the menu's exact height, rule included */
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#0F161D;--ink:#E5EAEF;--muted:#93A0AC;--rule:#25303B;--band:#1A232C;--winter:rgba(229,234,239,.07);
@@ -55,8 +55,8 @@ h1{font-size:clamp(2.75rem,7.5vw,5.5rem);line-height:.95;letter-spacing:-.035em}
 
 /* ---- navigation: three views as tabs; the name joins on the right once the header has scrolled away ---- */
 .nav{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--rule)}
-.links{display:flex;align-items:center;gap:clamp(1.25rem,3vw,2rem)}
-.links a{padding:1rem 0 .85rem;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--muted);text-decoration:none}
+.links{display:flex;gap:clamp(1.25rem,3vw,2rem);height:calc(var(--nav) - 1px)}
+.links a{display:flex;align-items:center;margin-bottom:-1px;border-bottom:2px solid transparent;color:var(--muted);text-decoration:none}
 .links a:hover{color:var(--ink)}
 .links a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
 .links .me{margin-left:auto;font-family:var(--serif);font-size:1.1rem;color:var(--ink);visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s}
@@ -65,7 +65,7 @@ h1{font-size:clamp(2.75rem,7.5vw,5.5rem);line-height:.95;letter-spacing:-.035em}
 @media (prefers-reduced-motion:reduce){.links .me{transition:none}}
 
 /* ---- views ---- */
-main{min-height:calc(100vh - var(--nav))}   /* every view can scroll its top to the menu, however short */
+.stage{min-height:calc(100vh - var(--nav))}   /* view and footer together fill the screen below the menu, so any view can scroll its top to the menu; a short view leaves the spare room after the footer */
 .viz{padding-block:clamp(1.75rem,4vh,2.5rem) clamp(2.5rem,6vh,4rem)}
 .viz:not([hidden]) ~ .viz{border-top:1px solid var(--rule)}
 .viz h2{font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
@@ -149,7 +149,7 @@ footer{padding-block:0 3rem;color:var(--muted);font-size:.875rem}
   :root{--bg:#fff;--ink:#000;--muted:#444;--rule:#bbb}
   body{font-size:9pt;line-height:1.38}
   .nav,.sub,#climate,#training,.head,.next,footer{display:none}
-  main{min-height:0}
+  .stage{min-height:0}
   #about{display:block;padding:0}
   .wrap{max-width:none;padding-inline:0}
   a{text-decoration:none}
@@ -189,6 +189,7 @@ footer{padding-block:0 3rem;color:var(--muted);font-size:.875rem}
   </div>
 </nav>
 
+<div class="stage">
 <main class="wrap">
 <section class="viz" id="climate" aria-labelledby="climate-h">
   <h2 id="climate-h">The longer you look, the clearer it gets</h2>
@@ -342,6 +343,7 @@ cd nestorowicz.nl/climate
     <p>No cookies, trackers or external requests.</p>
   </div>
 </footer>
+</div>
 
 <script id="sessions" type="text/csv">
 date,sport,moving_min,distance_km
@@ -6029,7 +6031,7 @@ function build(csv){
   });
 
   /* ---- also in the data: four small multiples on one pattern ---- */
-  const A = full[0], Bf = yLast, years = []; for (let y = A; y <= yN; y++) years.push(y);
+  const A = full[0], years = []; for (let y = A; y <= yN; y++) years.push(y);
   const Yr = Object.fromEntries(years.map(y => [y, { rk: 0, rm: 0, bk: 0, bm: 0, n: 0, min: 0, days: new Set(), runs: [], rides: [] }]));
   for (const r of rows) {
     const o = Yr[r.y]; if (!o) continue;
@@ -6049,38 +6051,48 @@ function build(csv){
     if (i < days.length) run = { a: days[i], n: 1 };
   }
 
-  // one pattern for all four: a point per year, the first and last complete years labelled, this year hollow
-  function spark(fn, { color, invert = false, fmt }, VW){
-    const VH = 128, pt = 20, pb = 36, gl = 40, gr = 6, n = years.length, slot = (VW - gl - gr) / n, vals = years.map(fn);
-    const lo = Math.min(...vals), hi = Math.max(...vals), r = hi - lo || 1;
-    const X = i => gl + (i + .5) * slot, Yv = v => pt + (invert ? v - lo : hi - v) / r * (VH - pt - pb);
-    const ib = years.indexOf(Bf), pts = vals.map((v, i) => `${f(X(i))} ${f(Yv(v))}`);
+  // one pattern for all: a point per year with data, a gap where a year has none, the first and last complete years with data labelled, this year hollow
+  function spark(fn, a, b, { color, invert = false, fmt }, VW){
+    const VH = 128, pt = 20, pb = 36, gl = 40, gr = 6, n = years.length, now = n - 1, slot = (VW - gl - gr) / n;
+    const vals = years.map(y => { const v = fn(y); return Number.isFinite(v) ? v : null; }), known = vals.filter(v => v !== null);
+    const lo = Math.min(...known), hi = Math.max(...known), r = hi - lo || 1, ia = years.indexOf(a), ib = years.indexOf(b);
+    const X = i => gl + (i + .5) * slot, Yv = v => pt + (invert ? v - lo : hi - v) / r * (VH - pt - pb), P = i => `${f(X(i))} ${f(Yv(vals[i]))}`;
+    let line = '', pen = false;
+    for (let i = 0; i < now; i++) { if (vals[i] === null) { pen = false; continue; } line += (pen ? 'L' : 'M') + P(i); pen = true; }
     let g = `<line x1="${gl - 6}" x2="${VW}" y1="${VH - 19.5}" y2="${VH - 19.5}" style="stroke:var(--rule)"/>`;
-    g += `<path d="M${pts.slice(0, ib + 1).join('L')}" fill="none" style="stroke:${color}" stroke-width="1.6" stroke-linejoin="round"/>`;
-    if (ib < n - 1) g += `<path d="M${pts[ib]}L${pts[n - 1]}" fill="none" style="stroke:${color}" stroke-width="1.2" stroke-dasharray="2 3"/>`;
+    g += `<path d="${line}" fill="none" style="stroke:${color}" stroke-width="1.6" stroke-linejoin="round"/>`;
+    if (vals[now] !== null && ib === now - 1) g += `<path d="M${P(ib)}L${P(now)}" fill="none" style="stroke:${color}" stroke-width="1.2" stroke-dasharray="2 3"/>`;
     vals.forEach((v, i) => {
-      g += i === n - 1 && ib < n - 1
+      if (v === null) return;
+      g += i === now
         ? `<circle cx="${f(X(i))}" cy="${f(Yv(v))}" r="3" style="fill:var(--bg);stroke:${color}" stroke-width="1.4"/>`
-        : `<circle cx="${f(X(i))}" cy="${f(Yv(v))}" r="${i === 0 || i === ib ? 3.6 : 2.3}" style="fill:${color}"/>`;
+        : `<circle cx="${f(X(i))}" cy="${f(Yv(v))}" r="${i === ia || i === ib ? 3.6 : 2.3}" style="fill:${color}"/>`;
     });
     const label = (x, y, anchor, v) => `<text x="${f(x)}" y="${f(y)}" text-anchor="${anchor}" style="fill:var(--ink)" font-weight="600" font-size="13">${fmt(v)}</text>`;
-    g += label(X(0) - 8, Yv(vals[0]) + 4.5, 'end', vals[0]);   // the first value to the left of its point
-    const ye = Yv(vals[ib]), under = [ib - 1, ib + 1].some(j => j < n && Yv(vals[j]) < ye - 2) && ye + 17 < VH - 26;   // the last value above its point, below if a neighbour is higher and the axis allows
+    g += label(X(ia) - 8, Yv(vals[ia]) + 4.5, 'end', vals[ia]);   // the first value to the left of its point
+    const ye = Yv(vals[ib]), under = [ib - 1, ib + 1].some(j => vals[j] != null && Yv(vals[j]) < ye - 2) && ye + 17 < VH - 26;   // the last value above its point, below if a neighbour is higher and the axis allows
     g += label(X(ib), under ? ye + 17 : ye - 9, 'middle', vals[ib]);
     g += years.map((y, i) => `<text x="${f(X(i))}" y="${VH - 4}" text-anchor="middle" font-size="11">’${String(y).slice(2)}</text>`).join('');
     return `<svg viewBox="0 0 ${VW} ${VH}" width="${VW}" height="${VH}" aria-hidden="true">${g}</svg>`;
   }
-  const up = fn => fn(Bf) > fn(A), rA = med(Yr[A].runs), rB = med(Yr[Bf].runs), bA = med(Yr[A].rides), bB = med(Yr[Bf].rides);
+  // [measure, its title and caption from the first and last complete years with data, style]; a measure with fewer than two such years has no trend and no chart
   const items = [
-    { h: `Runs got ${up(S.pace) ? 'slower' : 'faster'}${rB > rA ? ' and longer' : rB < rA ? ' and shorter' : ''}`, unit: `Pace per km, faster is higher. Median run ${d1.format(rA)} to ${d1.format(rB)}\u00a0km.`,
-      chart: VW => spark(S.pace, { color: 'var(--run)', invert: true, fmt: mmss }, VW) },
-    { h: `Rides got ${up(S.speed) ? 'faster' : 'slower'}${bB < bA ? ' and shorter' : bB > bA ? ' and longer' : ''}`, unit: `Outdoor speed, km/h. Median ride ${nf.format(Math.round(bA))} to ${nf.format(Math.round(bB))}\u00a0km.`,
-      chart: VW => spark(S.speed, { color: 'var(--ride)', fmt: v => d1.format(v) }, VW) },
-    { h: S.share(Bf) >= .9 ? 'Almost every day' : 'Most days', unit: `Days with a session. Longest streak ${best.n}\u00a0days.`,
-      chart: VW => spark(S.share, { color: 'var(--ink)', fmt: pctR }, VW) },
-    { h: up(S.perDay) && !up(S.avg) ? 'More, shorter sessions' : 'Sessions per active day', unit: `Sessions per active day. Average session ${Math.round(S.avg(A))} to ${Math.round(S.avg(Bf))}\u00a0min.`,
-      chart: VW => spark(S.perDay, { color: 'var(--ink)', fmt: v => d1.format(v) }, VW) },
-  ];
+    [S.pace, (a, b) => { const ra = med(Yr[a].runs), rb = med(Yr[b].runs);
+      return [`Runs got ${S.pace(b) > S.pace(a) ? 'slower' : 'faster'}${rb > ra ? ' and longer' : rb < ra ? ' and shorter' : ''}`, `Pace per km, faster is higher. Median run ${d1.format(ra)} to ${d1.format(rb)}\u00a0km.`]; },
+      { color: 'var(--run)', invert: true, fmt: mmss }],
+    [S.speed, (a, b) => { const ra = med(Yr[a].rides), rb = med(Yr[b].rides);
+      return [`Rides got ${S.speed(b) > S.speed(a) ? 'faster' : 'slower'}${rb < ra ? ' and shorter' : rb > ra ? ' and longer' : ''}`, `Outdoor speed, km/h. Median ride ${nf.format(Math.round(ra))} to ${nf.format(Math.round(rb))}\u00a0km.`]; },
+      { color: 'var(--ride)', fmt: v => d1.format(v) }],
+    [S.share, (a, b) => [S.share(b) >= .9 ? 'Almost every day' : 'Most days', `Days with a session. Longest streak ${best.n}\u00a0days.`],
+      { color: 'var(--ink)', fmt: pctR }],
+    [S.perDay, (a, b) => [S.perDay(b) > S.perDay(a) && S.avg(b) <= S.avg(a) ? 'More, shorter sessions' : 'Sessions per active day', `Sessions per active day. Average session ${Math.round(S.avg(a))} to ${Math.round(S.avg(b))}\u00a0min.`],
+      { color: 'var(--ink)', fmt: v => d1.format(v) }],
+  ].flatMap(([fn, text, style]) => {
+    const ok = full.filter(y => Number.isFinite(fn(y)));
+    if (ok.length < 2) return [];
+    const a = ok[0], b = ok[ok.length - 1], [h, unit] = text(a, b);
+    return [{ h, unit, chart: VW => spark(fn, a, b, style, VW) }];
+  });
   $('also-note').textContent = `${A} to ${yN}; the hollow point is ${yN} so far.`;
   const fbox = $('findings');
   fbox.innerHTML = items.map(it => `<article class="fd"><h4>${it.h}</h4><p class="unit">${it.unit}</p><div class="ch"></div></article>`).join('');
