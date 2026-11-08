@@ -145,9 +145,9 @@ footer{padding-block:0 3rem;color:var(--muted);font-size:.875rem}
 
 /* ---- print: the About me view as a one-page CV (about/make_pdf.py) ---- */
 @media print{
-  @page{margin:12mm 15mm}
+  @page{margin:10mm 15mm}
   :root{--bg:#fff;--ink:#000;--muted:#444;--rule:#bbb}
-  body{font-size:9pt;line-height:1.38}
+  body{font-size:9pt;line-height:1.33}
   .nav,.sub,#climate,#training,.head,.next,footer{display:none}
   .stage{min-height:0}
   #about{display:block;padding:0}
@@ -161,11 +161,11 @@ footer{padding-block:0 3rem;color:var(--muted);font-size:.875rem}
   .lead{max-width:none;margin-top:2mm;font-size:10.5pt}
   .contact{margin-top:2mm}
   .contact a[href*="linkedin"]::after{content:": linkedin.com/in/toni-nestorowicz"}
-  .cv{grid-template-columns:26mm 1fr;gap:0 7mm;padding-block:2.5mm;border-top:1px solid var(--rule)}
+  .cv{grid-template-columns:26mm 1fr;gap:0 7mm;padding-block:2mm;border-top:1px solid var(--rule)}
   .cv h3{font-size:12pt}
   .cv h4{font-size:10pt}
   .when{font-size:9pt}
-  .cv ol{gap:2.5mm}
+  .cv ol{gap:2mm}
   .cv li{break-inside:avoid}
   .cv li p{max-width:none;margin-top:.5mm}
 }
